@@ -1,13 +1,42 @@
 ﻿local eventFrame = CreateFrame("Frame");
 eventFrame:RegisterEvent("VARIABLES_LOADED");
+eventFrame:RegisterEvent("CHAT_MSG_ADDON");
+eventFrame:RegisterEvent("CHAT_MSG_SYSTEM");
 function eventFrame:OnEvent(event, ...)
 	if event == "VARIABLES_LOADED" then
 		if SpammerDB ~= nil then
-			if SpammerDB["delay"] ~= nil then spamwaittime:SetText(SpammerDB.delay); end
-			if SpammerDB["channel"] ~= nil then spamchannel:SetText(SpammerDB.channel); end
-			if SpammerDB["line1"] ~= nil then spamtext1:SetText(SpammerDB.line1); end
-			if SpammerDB["line2"] ~= nil then spamtext2:SetText(SpammerDB.line2); end
-			if SpammerDB["line3"] ~= nil then spamtext3:SetText(SpammerDB.line3); end			
+			if SpammerDB.delay ~= nil then spamwaittime:SetText(SpammerDB.delay); end
+			if SpammerDB.channel ~= nil then spamchannel:SetText(SpammerDB.channel); end
+			if SpammerDB.line1 ~= nil then spamtext1:SetText(SpammerDB.line1); end
+			if SpammerDB.line2 ~= nil then spamtext2:SetText(SpammerDB.line2); end
+			if SpammerDB.line3 ~= nil then spamtext3:SetText(SpammerDB.line3); end			
+		end
+	end	
+	if event == "CHAT_MSG_ADDON" then
+		function eventFrame:CHAT_MSG_ADDON(prefix, message, distribution, sender)
+			if prefix == "SPMR" and distribution == "GUILD" then
+				ParseMessage(sender, message)
+				MSG:SetText("2");
+			end
+		end
+	end
+	if event == "CHAT_MSG_ADDON" then
+		function eventFrame:CHAT_MSG_ADDON(prefix, message, distribution, sender)
+			if prefix == "SPMR" and distribution == "GUILD" then
+				MSG:SetText("2");
+				if not ChatControl[sender] then
+					ChatControl[sender]={}
+					ChatControl[sender].time=0
+				end
+				if message == "REQ" then
+					if (GetTime() - ChatControl[sender].time) < 15 then 
+						return
+					else
+						ChatControl[sender].time = GetTime()
+					end
+				end
+				ParseMessage(sender, message)
+			end
 		end
 	end
 end			
@@ -17,15 +46,16 @@ function Spammer_OnLoad()
 	ChatEdit_InsertLink_old=ChatEdit_InsertLink;
 	ChatEdit_InsertLink=GetLink;
 	Spammer:SetScale(0.7);
+	local channels = { GetChannelList(); };
 end
 
 function SaveDB()
 	SpammerDB = { };
-	SpammerDB["delay"] = spamwaittime:GetText();
-	SpammerDB["channel"] = spamchannel:GetText();
-	SpammerDB["line1"] = spamtext1:GetText();
-	SpammerDB["line2"] = spamtext2:GetText();
-	SpammerDB["line3"] = spamtext3:GetText();			
+	SpammerDB.delay = spamwaittime:GetText();
+	SpammerDB.channel = spamchannel:GetText();
+	SpammerDB.line1 = spamtext1:GetText();
+	SpammerDB.line2 = spamtext2:GetText();
+	SpammerDB.line3 = spamtext3:GetText();			
 	ChatFrame1:AddMessage("|cff404040Spammer|r:\124cffFF4500 данные сохранены")
 end
 
@@ -123,8 +153,45 @@ function autospamwithtime_callback()
 			end	
 		SendChatMessage(spamtext1:GetText(), cht, GetDefaultLanguage("Player"), chd)
 		SendChatMessage(spamtext2:GetText(), cht, GetDefaultLanguage("Player"), chd)
-		SendChatMessage(spamtext3:GetText(), cht, GetDefaultLanguage("Player"), chd)
+		SendChatMessage(spamtext3:GetText(), cht, GetDefaultLanguage("Player"), chd)		
 		timestampautospam = currentautospam_time;
 		rrecounter = rrecounter+1
 	end
+end
+
+function Channels()														-- автовыбора канала
+	local channels = { GetChannelList(); }
+	local channels_user = {};
+	local iter = 0;
+	if Switch:GetChecked(true) then
+		for i,title in ipairs(channels) do	
+			if i % 2 ~= 0 then
+				iter = iter + 1;
+				channels_user[iter] = title;				
+			else
+				if title == "ПоискСпутников" then
+					spamchannel:SetText(channels_user[iter]);
+				end				
+				channels_user[iter] = channels_user[iter] .. ". " .. title;
+				ShowDebug("Found channel " .. channels_user[iter]);			
+			end		
+		end
+	else 		
+		spamchannel:SetText(SpammerDB.channel)
+	end
+end
+
+
+-- тест связи аддонов
+
+local sfind = string.find
+local tinsert = table.insert
+local tsort = table.sort
+
+function SendMessage(msg)
+	SendAddonMessage("SPMR", msg, "GUILD", "CHANNEL")
+end
+
+function ParseMessage(sender, msg)
+	MSG:SetText("2");
 end

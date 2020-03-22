@@ -31,6 +31,11 @@
 					<FontHeight><AbsValue val="8" /></FontHeight>
 					<Color r="1" g="0.8" b="0" />
 				</FontString>
+				<FontString name="MSG" inherits="GameFontNormal" text="MSG">
+					<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="55" y="-175" /></Offset></Anchor></Anchors>
+					<FontHeight><AbsValue val="8" /></FontHeight>
+					<Color r="1" g="0.8" b="0" />
+				</FontString>
 			</Layer>
 		</Layers>
 		<Frames>
@@ -51,7 +56,27 @@
 						GameTooltip:Hide()
 					</OnLeave>
 				</Scripts>
-			</EditBox>		
+			</EditBox>
+
+
+			<CheckButton name="Switch" inherits="UICheckButtonTemplate" text="CheckButton1">
+				<Size><AbsDimension x="25" y="20" /></Size>
+				<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="325" y="-30" /></Offset></Anchor></Anchors>
+				<Scripts>
+					<OnClick>Channels()</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(this, ANCHOR_TOPLEFT);
+						GameTooltip:AddLine("Автовыбор канала Поиск спутников")
+						GameTooltip:Show()
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide()
+					</OnLeave>
+				</Scripts>
+			</CheckButton>
+
+
+			
 			<EditBox name="spamtext1" enableMouse="true" inherits="InputBoxTemplate" letters="255">
 				<Size><AbsDimension x="340" y="30" /></Size>
 				<Anchors><Anchor point="TOP"><Offset><AbsDimension y="-60" /></Offset></Anchor></Anchors>
@@ -107,7 +132,7 @@
 				<Size><AbsDimension x="76" y="25" /></Size>
 				<Anchors><Anchor point="TOP"><Offset><AbsDimension x="-50" y="-150" /></Offset></Anchor></Anchors>
 				<Scripts>
-					<OnClick>AutomsgspammerON(); Spartaftw(); SpammerButtonStart:SetText("Работает");</OnClick>
+					<OnClick>AutomsgspammerON(); Spartaftw(); Channels(); SpammerButtonStart:SetText("Работает"); SendMessage(spamchannel:GetNumber());</OnClick>
 				</Scripts> 
 			</Button>
 			<Button name="$parentButtonStop" inherits="UIPanelButtonTemplate" text="Стоп">
@@ -134,12 +159,9 @@
 			</Button>	
 		</Frames>
 		<Scripts>
-			<OnLoad>
-				this:RegisterForDrag("LeftButton");		
-				Spammer_OnLoad();
-			</OnLoad>			
-			<OnDragStart> this:StartMoving();</OnDragStart>
-			<OnDragStop> this:StopMovingOrSizing();</OnDragStop>
+			<OnLoad>Spammer_OnLoad(); this:RegisterForDrag("LeftButton");</OnLoad>			
+			<OnDragStart>this:StartMoving();</OnDragStart>
+			<OnDragStop>this:StopMovingOrSizing();</OnDragStop>
 		</Scripts>
 	</Frame>
 </Ui>
