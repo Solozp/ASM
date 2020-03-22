@@ -1,0 +1,12 @@
+## Interface: 30300
+## Title: Spammer
+## Author: JJ
+## Version: 0.9
+## Notes: WoW Spam Bot
+## eMail: 
+## DefaultState: Enabled
+## SavedVariablesPerCharacter: SpammerDB
+## LoadOnDemand: 0
+Spammer.lua
+Spammer.xml
+timer.xml

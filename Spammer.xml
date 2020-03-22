@@ -1,0 +1,145 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Frame name="Spammer" hidden="false" movable="true" enableMouse="true" enableKeyboard="true" frameStrata="DIALOG">
+		<Size><AbsDimension x="390" y="200" /></Size>
+		<Anchors><Anchor point="CENTER"></Anchor></Anchors>
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background-Dark" edgeFile="Interface\Buttons\UI-SliderBar-Border" tile="true">
+			<BackgroundInsets> 
+				<AbsInset left="3" right="3" top="6" bottom="6" /> 
+			</BackgroundInsets> 
+			<TileSize> 
+			<AbsValue val="8" /> 
+			</TileSize> 
+			<EdgeSize> 
+			<AbsValue val="8" /> 
+			</EdgeSize> 			
+		</Backdrop>
+		<Layers>
+			<Layer>
+				<FontString name="$parentTitleString" inherits="GameFontNormal" text="SPAMMER">
+					<Size><AbsDimension x="140" y="0" /></Size>
+					<Anchors><Anchor point="TOP"><Offset><AbsDimension y="-10" /></Offset></Anchor></Anchors>
+					<FontHeight><AbsValue val="8" /></FontHeight>
+					<Color r="1" g="0.8" b="0" />
+				</FontString>
+				<FontString name="$parentWAIT" inherits="GameFontNormal" text="Интервал">
+					<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="55" y="-35" /></Offset></Anchor></Anchors>
+					<FontHeight><AbsValue val="8" /></FontHeight>
+					<Color r="1" g="0.8" b="0" />
+				</FontString>
+				<FontString name="$parentCH" inherits="GameFontNormal" text="Канал">
+					<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="250" y="-35" /></Offset></Anchor></Anchors>
+					<FontHeight><AbsValue val="8" /></FontHeight>
+					<Color r="1" g="0.8" b="0" />
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<EditBox name="spamwaittime" enableMouse="true" numeric="true" inherits="InputBoxTemplate" letters="3">
+				<Size><AbsDimension x="25" y="20" /></Size>
+				<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="120" y="-30" /></Offset></Anchor></Anchors>				
+			</EditBox>
+			<EditBox name="spamchannel" enableMouse="true" inherits="InputBoxTemplate" letters="2">
+				<Size><AbsDimension x="25" y="20" /></Size>
+				<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="300" y="-30" /></Offset></Anchor></Anchors>				
+				<Scripts>
+				   <OnEnter>
+						GameTooltip:SetOwner(this, ANCHOR_TOPLEFT);
+						GameTooltip:AddLine("для спама в гильдию - г \n для спама в крик - к")
+						GameTooltip:Show()
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide()
+					</OnLeave>
+				</Scripts>
+			</EditBox>		
+			<EditBox name="spamtext1" enableMouse="true" inherits="InputBoxTemplate" letters="255">
+				<Size><AbsDimension x="340" y="30" /></Size>
+				<Anchors><Anchor point="TOP"><Offset><AbsDimension y="-60" /></Offset></Anchor></Anchors>
+			</EditBox>
+			<EditBox name="spamtext2" enableMouse="true" inherits="InputBoxTemplate" letters="255">
+				<Size><AbsDimension x="340" y="30" /></Size>
+				<Anchors><Anchor point="TOP"><Offset><AbsDimension y="-90" /></Offset></Anchor></Anchors>				
+			</EditBox>
+			<EditBox name="spamtext3" enableMouse="true" inherits="InputBoxTemplate" letters="255">
+				<Size><AbsDimension x="340" y="30" /></Size>
+				<Anchors><Anchor point="TOP"><Offset><AbsDimension y="-120" /></Offset></Anchor></Anchors>
+			</EditBox>
+			<Button name="$parentButtonClose" text="x">
+				<Size><AbsDimension x="15" y="15" /></Size>
+				<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="370" y="-5" /></Offset></Anchor></Anchors>
+				<Scripts><OnClick>Spammer:Hide();</OnClick></Scripts> 				
+				<NormalFont style="GameFontNormal" /> 
+				<HighlightFont style="GameFontHighlight" /> 
+				<DisabledFont style="GameFontDisable" /> 
+				<PushedTextOffset x="0" y="0" /> 
+			</Button>
+			<Button name="$parentButtonSave" inherits="UIPanelButtonTemplate" text="S">			
+				<Size><AbsDimension x="25" y="25" /></Size>
+				<Anchors><Anchor point="TOP"><Offset><AbsDimension x="-125" y="-150" /></Offset></Anchor></Anchors>
+				<Scripts>
+					<OnClick>SaveDB();</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(this, ANCHOR_TOPLEFT);
+						GameTooltip:AddLine("Сохранить данные")
+						GameTooltip:Show()
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide()
+					</OnLeave>
+				</Scripts> 
+			</Button>
+			<Button name="$parentButtonLoad" inherits="UIPanelButtonTemplate" text="L">			
+				<Size><AbsDimension x="25" y="25" /></Size>
+				<Anchors><Anchor point="TOP"><Offset><AbsDimension x="-100" y="-150" /></Offset></Anchor></Anchors>
+				<Scripts>
+					<OnClick>LoadDB();</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(this, ANCHOR_TOPLEFT);
+						GameTooltip:AddLine("Загрузить данные")
+						GameTooltip:Show()
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide()
+					</OnLeave>
+				</Scripts> 
+			</Button>			
+			<Button name="$parentButtonStart" inherits="UIPanelButtonTemplate" text="Спамить!">			
+				<Size><AbsDimension x="76" y="25" /></Size>
+				<Anchors><Anchor point="TOP"><Offset><AbsDimension x="-50" y="-150" /></Offset></Anchor></Anchors>
+				<Scripts>
+					<OnClick>AutomsgspammerON(); Spartaftw(); SpammerButtonStart:SetText("Работает");</OnClick>
+				</Scripts> 
+			</Button>
+			<Button name="$parentButtonStop" inherits="UIPanelButtonTemplate" text="Стоп">
+				<Size><AbsDimension x="76" y="25" /></Size>
+				<Anchors><Anchor point="TOP"><Offset><AbsDimension x="50" y="-150" /></Offset></Anchor></Anchors>
+				<Scripts>
+					<OnClick>AutomsgspammerOFF(); SpammerButtonStart:SetText("Спамить!")</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentButtonLoad" inherits="UIPanelButtonTemplate" text="C">			
+				<Size><AbsDimension x="25" y="25" /></Size>
+				<Anchors><Anchor point="TOP"><Offset><AbsDimension x="100" y="-150" /></Offset></Anchor></Anchors>
+				<Scripts>
+					<OnClick>Clear();</OnClick>
+					<OnEnter>
+						GameTooltip:SetOwner(this, ANCHOR_TOPLEFT);
+						GameTooltip:AddLine("Очистить текст")
+						GameTooltip:Show()
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide()
+					</OnLeave>
+				</Scripts> 
+			</Button>	
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				this:RegisterForDrag("LeftButton");		
+				Spammer_OnLoad();
+			</OnLoad>			
+			<OnDragStart> this:StartMoving();</OnDragStart>
+			<OnDragStop> this:StopMovingOrSizing();</OnDragStop>
+		</Scripts>
+	</Frame>
+</Ui>
