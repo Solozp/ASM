@@ -1,7 +1,7 @@
 ## Interface: 30300
 ## Title: Spammer
 ## Author: JJ
-## Version: 1.0
+## Version: 1.1
 ## Notes: WoW Spam Bot
 ## eMail: 
 ## DefaultState: Enabled

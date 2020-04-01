@@ -1,9 +1,17 @@
-﻿local eventFrame = CreateFrame("Frame");
-eventFrame:RegisterEvent("VARIABLES_LOADED");
-eventFrame:RegisterEvent("CHAT_MSG_ADDON");
-eventFrame:RegisterEvent("CHAT_MSG_SYSTEM");
-function eventFrame:OnEvent(event, ...)
-	if event == "VARIABLES_LOADED" then
+﻿local SpammerFrame = CreateFrame("Frame");
+SpammerFrame:RegisterEvent("ADDON_LOADED");
+SpammerFrame:RegisterEvent("VARIABLES_LOADED");
+SpammerFrame:RegisterEvent("CHAT_MSG_ADDON");
+
+function SpammerFrame:OnEvent(event, ...)
+	if event == "ADDON_LOADED" then
+		Spammer:RegisterForDrag("LeftButton");
+		if ... == "Spammer" then
+			ChatEdit_InsertLink_old=ChatEdit_InsertLink;
+			ChatEdit_InsertLink=GetLink;
+			local channels = { GetChannelList(); };
+		end	
+	elseif event == "VARIABLES_LOADED" then
 		if SpammerDB ~= nil then
 			if SpammerDB.delay ~= nil then spamwaittime:SetText(SpammerDB.delay); end
 			if SpammerDB.channel ~= nil then spamchannel:SetText(SpammerDB.channel); end
@@ -11,42 +19,27 @@ function eventFrame:OnEvent(event, ...)
 			if SpammerDB.line2 ~= nil then spamtext2:SetText(SpammerDB.line2); end
 			if SpammerDB.line3 ~= nil then spamtext3:SetText(SpammerDB.line3); end			
 		end
-	end	
-	if event == "CHAT_MSG_ADDON" then
-		function eventFrame:CHAT_MSG_ADDON(prefix, message, distribution, sender)
-			if prefix == "SPMR" and distribution == "GUILD" then
-				ParseMessage(sender, message)
-				MSG:SetText("2");
-			end
+	elseif event == "CHAT_MSG_ADDON" then
+		s_prefix,  s_text,  s_channel, s_sender = ...; 
+		if s_prefix == "SPMR" then
+			tm = tonumber(s_text);
+			stk = time();
 		end
 	end
-	if event == "CHAT_MSG_ADDON" then
-		function eventFrame:CHAT_MSG_ADDON(prefix, message, distribution, sender)
-			if prefix == "SPMR" and distribution == "GUILD" then
-				MSG:SetText("2");
-				if not ChatControl[sender] then
-					ChatControl[sender]={}
-					ChatControl[sender].time=0
-				end
-				if message == "REQ" then
-					if (GetTime() - ChatControl[sender].time) < 15 then 
-						return
-					else
-						ChatControl[sender].time = GetTime()
-					end
-				end
-				ParseMessage(sender, message)
-			end
-		end
-	end
-end			
-eventFrame:SetScript("OnEvent", eventFrame.OnEvent);
+end
+SpammerFrame:SetScript("OnEvent", SpammerFrame.OnEvent);
 
-function Spammer_OnLoad()
-	ChatEdit_InsertLink_old=ChatEdit_InsertLink;
-	ChatEdit_InsertLink=GetLink;
-	Spammer:SetScale(0.7);
-	local channels = { GetChannelList(); };
+function spmr_list(s, t)
+	if not s == UnitName("player") then
+		i = tonumber(string.match(MSG:GetText(), "%d+"))
+		if  (i == nil) then
+			MSG:SetText("Сейчас спамит "..s..":"..(1).."/"..t)
+		elseif 	(i < t) then
+			MSG:SetText("Сейчас спамит "..s..":"..(i+1).."/"..t)
+		else MSG:SetText("последний спамер "..s)
+			stk = ""				
+		end
+	end
 end
 
 function SaveDB()
@@ -96,6 +89,14 @@ function timerbot_callback()
 	if AutospammerON==1 then
 		autospamwithtime_callback()
 	end
+	if type(stk) == "number" then
+		c_time = time();
+		sl_t = (c_time - stk)
+		if sl_t == 1 then
+			stk = c_time
+			spmr_list(s_sender, tm)			
+		end
+	end
 end
 
 function AutomsgspammerON()
@@ -111,20 +112,10 @@ function AutomsgspammerOFF()
 	if AutospammerON==1 then
 		AutospammerON=0
 		ChatFrame1:AddMessage("|cff404040Spammer|r:\124cffFF4500 остановлен")
-		autospamwithtimestop();
 	end
 end
 
-function autospamwithtimestop()
-	rrecounter = 0
-end    
-
 timestampautospam = time();
-rrecounter = 0
-
-function autospamwithtimestop()
-	rrecounter = 0
-end
 
 function GetLink(lnk)
 	if spamtext1:HasFocus() then
@@ -141,7 +132,7 @@ end
 function autospamwithtime_callback()
 	autopamwaittime = spamwaittime:GetNumber();
 	currentautospam_time = time();
-	if (currentautospam_time - timestampautospam > (autopamwaittime))  then
+	if (currentautospam_time - timestampautospam > autopamwaittime)  then
 			if spamchannel:GetNumber()>0 and spamchannel:GetNumber()<10 then
 				cht = "CHANNEL";
 				chd = spamchannel:GetNumber()
@@ -155,11 +146,11 @@ function autospamwithtime_callback()
 		SendChatMessage(spamtext2:GetText(), cht, GetDefaultLanguage("Player"), chd)
 		SendChatMessage(spamtext3:GetText(), cht, GetDefaultLanguage("Player"), chd)		
 		timestampautospam = currentautospam_time;
-		rrecounter = rrecounter+1
+		SendAddonMessage("SPMR", spamwaittime:GetNumber(), "GUILD")
 	end
 end
 
-function Channels()														-- автовыбора канала
+function Channels()								-- автовыбора канала
 	local channels = { GetChannelList(); }
 	local channels_user = {};
 	local iter = 0;
@@ -172,26 +163,15 @@ function Channels()														-- автовыбора канала
 				if title == "ПоискСпутников" then
 					spamchannel:SetText(channels_user[iter]);
 				end				
-				channels_user[iter] = channels_user[iter] .. ". " .. title;
-				ShowDebug("Found channel " .. channels_user[iter]);			
+				channels_user[iter] = channels_user[iter] .. ". " .. title;				
 			end		
 		end
-	else 		
-		spamchannel:SetText(SpammerDB.channel)
 	end
 end
 
-
--- тест связи аддонов
-
-local sfind = string.find
-local tinsert = table.insert
-local tsort = table.sort
-
-function SendMessage(msg)
-	SendAddonMessage("SPMR", msg, "GUILD", "CHANNEL")
-end
-
-function ParseMessage(sender, msg)
-	MSG:SetText("2");
+function Start()
+	Spartaftw();
+	AutomsgspammerON();
+	Channels();
+	SpammerButtonStart:SetText("Работает");
 end
