@@ -22,6 +22,7 @@ function SpammerFrame:OnEvent(event, ...)
 	elseif event == "CHAT_MSG_ADDON" then
 		s_prefix,  s_text,  s_channel, s_sender = ...; 
 		if s_prefix == "SPMR" then
+			sender = s_sender;
 			tm = tonumber(s_text);
 			stk = time();
 		end
@@ -94,7 +95,7 @@ function timerbot_callback()
 		sl_t = (c_time - stk)
 		if sl_t == 1 then
 			stk = c_time
-			spmr_list(s_sender, tm)			
+			spmr_list(sender, tm)			
 		end
 	end
 end
@@ -169,7 +170,7 @@ function Channels()								-- автовыбора канала
 	end
 end
 
-function Start()
+function StartSP()
 	Spartaftw();
 	AutomsgspammerON();
 	Channels();

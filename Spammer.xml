@@ -87,7 +87,7 @@
 				<Size x="65" y="25"/>
 				<Anchors><Anchor point="BOTTOM" relativeTo="spamtext3"><Offset x="-50" y="-30"/></Anchor></Anchors>
 				<Scripts>
-					<OnClick>Start()</OnClick>
+					<OnClick>StartSP()</OnClick>
 				</Scripts> 
 			</Button>
 			<Button name="$parentButtonLoad" inherits="UIPanelButtonTemplate" text="L">			
