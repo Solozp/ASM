@@ -1,0 +1,12 @@
+## Interface: 30300
+## Title: ASM
+## Author: JJ
+## Version: 1.2
+## Notes: Assistant for sending messages
+## eMail: 
+## DefaultState: Enabled
+## SavedVariablesPerCharacter: ASMDB
+## LoadOnDemand: 0
+ASM.lua
+ASM.xml
+ASMtimer.xml

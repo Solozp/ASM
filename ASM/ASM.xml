@@ -1,5 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<Frame name="Spammer" parent="UIParent" hidden="false" movable="true" enableMouse="true" enableKeyboard="true" frameStrata="DIALOG">
+	<Frame name="ASM" parent="UIParent" hidden="true" movable="true" enableMouse="true" enableKeyboard="true" frameStrata="DIALOG">
 		<Size x="390" y="200"/>
 		<Anchors><Anchor point="CENTER"></Anchor></Anchors>
 		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background-Dark" edgeFile="Interface\Buttons\UI-SliderBar-Border">
@@ -9,16 +9,16 @@
 		</Backdrop>
 		<Layers>
 			<Layer>
-				<FontString name="$parentTitleString" inherits="GameFontNormalLeft" text="SPAMMER">
+				<FontString name="$parentTitleString" inherits="GameFontNormalLeft" text="ASM">
 					<Anchors><Anchor point="TOP"><Offset y="-10"/></Anchor></Anchors>
 					<Color r="1" g="0.8" b="0"/>
 				</FontString>
 				<FontString name="$parentWAIT" inherits="GameFontNormal" text="Интервал">
-					<Anchors><Anchor point="TOP"><Offset x="-100" y="-30"/></Anchor></Anchors>
+					<Anchors><Anchor point="TOP"><Offset x="-120" y="-30"/></Anchor></Anchors>
 					<Color r="1" g="0.8" b="0"/>
 				</FontString>
 				<FontString name="$parentCH" inherits="GameFontNormal" text="Канал">
-					<Anchors><Anchor point="TOP"><Offset x="60" y="-30"/></Anchor></Anchors>
+					<Anchors><Anchor point="TOP"><Offset x="80" y="-30"/></Anchor></Anchors>
 					<Color r="1" g="0.8" b="0"/>
 				</FontString>
 				<FontString name="MSG" inherits="GameFontNormal" text=" ">
@@ -28,17 +28,27 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<EditBox name="spamwaittime" enableMouse="true" numeric="true" inherits="InputBoxTemplate" letters="3">
+			<EditBox name="waittime" enableMouse="true" numeric="true" inherits="InputBoxTemplate" letters="3">
 				<Size x="25" y="15"/>
 				<Anchors><Anchor point="RIGHT" relativeTo="$parentWAIT"><Offset x="35"/></Anchor></Anchors>
+				<Scripts>
+				   <OnEnter>
+						GameTooltip:SetOwner(this, ANCHOR_TOPLEFT);
+						GameTooltip:AddLine("Ваш персонаж может быть |cffFF4500забанен|r\nна сутки, при отправка сообщений \n|cffFF4500чаще 1го раза в 30 секунд")
+						GameTooltip:Show()
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide()
+					</OnLeave>
+				</Scripts>
 			</EditBox>
-			<EditBox name="spamchannel" enableMouse="true" inherits="InputBoxTemplate" letters="2">
+			<EditBox name="channel" enableMouse="true" inherits="InputBoxTemplate" letters="2">
 				<Size  x="20" y="15"/>	
 				<Anchors><Anchor point="RIGHT" relativeTo="$parentCH"><Offset x="35"/></Anchor></Anchors>				
 				<Scripts>
 				   <OnEnter>
 						GameTooltip:SetOwner(this, ANCHOR_TOPLEFT);
-						GameTooltip:AddLine("для спама в гильдию - г \n для спама в крик - к")
+						GameTooltip:AddLine("для отправки в гильдию - г \n для отправки в крик - к")
 						GameTooltip:Show()
 					</OnEnter>
 					<OnLeave>
@@ -48,7 +58,7 @@
 			</EditBox>
 			<CheckButton name="Switch" inherits="UICheckButtonTemplate" text="CheckButton1">
 				<Size x="25" y="25"/>
-				<Anchors><Anchor point="RIGHT" relativeTo="spamchannel"><Offset x="30"/></Anchor></Anchors>
+				<Anchors><Anchor point="RIGHT" relativeTo="channel"><Offset x="30"/></Anchor></Anchors>
 				<Scripts>
 					<OnClick>Channels()</OnClick>
 					<OnEnter>
@@ -61,38 +71,38 @@
 					</OnLeave>
 				</Scripts>
 			</CheckButton>
-			<EditBox name="spamtext1" enableMouse="true" inherits="InputBoxTemplate" letters="255">
+			<EditBox name="text1" enableMouse="true" inherits="InputBoxTemplate" letters="255">
 				<Size x="360" y="20"/>
 				<Anchors><Anchor point="TOP"><Offset y="-60"/></Anchor></Anchors>
 			</EditBox>
-			<EditBox name="spamtext2" enableMouse="true" inherits="InputBoxTemplate" letters="255">
+			<EditBox name="text2" enableMouse="true" inherits="InputBoxTemplate" letters="255">
 				<Size x="360" y="20"/>
 				<Anchors><Anchor point="TOP"><Offset y="-90"/></Anchor></Anchors>				
 			</EditBox>
-			<EditBox name="spamtext3" enableMouse="true" inherits="InputBoxTemplate" letters="255">
+			<EditBox name="text3" enableMouse="true" inherits="InputBoxTemplate" letters="255">
 				<Size x="360" y="20"/>
 				<Anchors><Anchor point="TOP"><Offset y="-120"/></Anchor></Anchors>
 			</EditBox>
 			<Button name="Close" text="x">
 				<Size x="25" y="25"/>
-				<Anchors><Anchor point="TOPRIGHT" relativeTo="Spammer"><Offset x="-5" y="-5"/></Anchor></Anchors>
-				<Scripts><OnClick>Spammer:Hide();</OnClick></Scripts> 				
+				<Anchors><Anchor point="TOPRIGHT" relativeTo="ASM"><Offset x="-5" y="-5"/></Anchor></Anchors>
+				<Scripts><OnClick>ASM:Hide();</OnClick></Scripts> 				
 				<NormalFont style="GameFontNormal"/> 
 				<HighlightFont style="GameFontHighlight"/> 
 				<DisabledFont style="GameFontDisable"/> 
 				<PushedTextOffset x="0" y="0"/> 
 			</Button>
 		
-			<Button name="$parentButtonStart" inherits="UIPanelButtonTemplate" text="Спамить!">			
+			<Button name="$parentButtonStart" inherits="UIPanelButtonTemplate" text="Пуск!">			
 				<Size x="65" y="25"/>
-				<Anchors><Anchor point="BOTTOM" relativeTo="spamtext3"><Offset x="-50" y="-30"/></Anchor></Anchors>
+				<Anchors><Anchor point="BOTTOM" relativeTo="text3"><Offset x="-50" y="-30"/></Anchor></Anchors>
 				<Scripts>
-					<OnClick>StartSP()</OnClick>
+					<OnClick>StartASM()</OnClick>
 				</Scripts> 
 			</Button>
 			<Button name="$parentButtonLoad" inherits="UIPanelButtonTemplate" text="L">			
 				<Size x="25" y="25"/>
-				<Anchors><Anchor point="LEFT" relativeTo="SpammerButtonStart"><Offset x="-25"/></Anchor></Anchors>
+				<Anchors><Anchor point="LEFT" relativeTo="ASMButtonStart"><Offset x="-25"/></Anchor></Anchors>
 				<Scripts>
 					<OnClick>LoadDB();</OnClick>
 					<OnEnter>
@@ -107,7 +117,7 @@
 			</Button>
 			<Button name="$parentButtonSave" inherits="UIPanelButtonTemplate" text="S">			
 				<Size x="25" y="25"/>
-				<Anchors><Anchor point="LEFT" relativeTo="SpammerButtonLoad"><Offset x="-25"/></Anchor></Anchors>
+				<Anchors><Anchor point="LEFT" relativeTo="ASMButtonLoad"><Offset x="-25"/></Anchor></Anchors>
 				<Scripts>
 					<OnClick>SaveDB();</OnClick>
 					<OnEnter>
@@ -122,14 +132,14 @@
 			</Button>
 			<Button name="$parentButtonStop" inherits="UIPanelButtonTemplate" text="Стоп">
 				<Size x="65" y="25"/>
-				<Anchors><Anchor point="BOTTOM" relativeTo="spamtext3"><Offset x="50" y="-30"/></Anchor></Anchors>
+				<Anchors><Anchor point="BOTTOM" relativeTo="text3"><Offset x="50" y="-30"/></Anchor></Anchors>
 				<Scripts>
-					<OnClick>AutomsgspammerOFF() SpammerButtonStart:SetText("Спамить!")</OnClick>
+					<OnClick>ASM_OFF()</OnClick>
 				</Scripts>
 			</Button>
 			<Button name="$parentButtonClear" inherits="UIPanelButtonTemplate" text="C">			
 				<Size x="25" y="25"/>
-				<Anchors><Anchor point="RIGHT" relativeTo="SpammerButtonStop"><Offset x="25"/></Anchor></Anchors>
+				<Anchors><Anchor point="RIGHT" relativeTo="ASMButtonStop"><Offset x="25"/></Anchor></Anchors>
 				<Scripts>
 					<OnClick>Clear()</OnClick>
 					<OnEnter>
